@@ -1,5 +1,5 @@
 /**
- * Created by Dominik Gajda & Konrad Polański
+ * Created by
  */
 
 import GameModel.ApplicationMenu;
