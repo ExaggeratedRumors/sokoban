@@ -1,0 +1,11 @@
+10,14,120
+XXXXXXXXXXXXXX
+X..__X_____XXX
+X..__X_______X
+X____X*XXXX__X
+X________XX__X
+X____X*_*___XX
+XXXXXX@XX____X
+XXX__________X
+XXX____X_____X
+XXXXXXXXXXXXXX
