@@ -12,86 +12,25 @@ import Interface.IGameFrame;
 import static Config.Param.*;
 
 
-/**
- * Klasa panelu bocznego gry
- */
 public class SideBlock extends JPanel implements ActionListener, ISideBlock, Runnable{
-    /**
-     * Szerokość panelu bocznego
-     */
     private int panelWidth;
-    /**
-     * Wysokość panelu bocznego
-     */
     private int panelHeight;
-    /**
-     * Rozmiar panelu bocznego
-     */
     private Dimension sideBlockDimensions;
-    /**
-     * Pula punktów bieżącej mapy
-     */
     private int currentScore;
-    /**
-     * Sumaryczna liczba punktów
-     */
     private int totalScore;
-    /**
-     * Zmienna przechowująca sumę punktów z poprzednich plansz
-     */
     private int previousScore;
-    /**
-     * liczba możliwych resetów
-     */
     private int resetNumber;
-    /**
-     * liczba możliwych to wykorzystania pociągnięć bloku
-     */
     private int pullNumber;
-    /**
-     * Zmienna określająca czy gra jest w stanie pauzy
-     */
     private boolean paused;
-    /**
-     * Obiekt słuchacza
-     */
     private ActionListener listener;
-    /**
-     * Lista słuchaczy
-     */
     private ArrayList<IGameFrame> listeners;
-    /**
-     * Informacja o liczbie punktow
-     */
     JLabel sideBlockDescriptions;
-    /**
-     * Informacja o sumarycznej liczbie punków
-     */
     JLabel totalScoreDescription;
-    /**
-     * Informacja w panelu bocznym o liczbie możliwych resetów planszy
-     */
     JLabel resetBlock;
-    /**
-     * Informacja w panelu bocznym o liczbie możliwych do wykorzystania pociągnięć bloku
-     */
     JLabel pullBlock;
-    /**
-     * Informacja o pauzie
-     */
     JLabel pauseLabel;
-    /**
-     * Obiekt tworzący przestrzeń w panelu
-     */
     JLabel freeSpace;
 
-    /**
-     * Konstruktor panelu bocznego
-     * @param panelWidth
-     * @param panelHeight
-     * @param listener
-     * @param score
-     */
     public SideBlock(int panelWidth, int panelHeight, ActionListener listener, int score){
         paused=false;
         this.panelHeight = panelHeight;
@@ -110,34 +49,31 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         sideBlockLayout();
     }
 
-    /**
-     * Ułożenie panelu bocznego
-     */
     private void sideBlockLayout(){
 
         GridBagConstraints constraint = new GridBagConstraints();
 
         sideBlockDescriptions= new JLabel("Pula punków planszy: " + currentScore);
-        constraint.fill = GridBagConstraints.HORIZONTAL; //Położenie wertykalne/horyzontalne
-        constraint.ipady = 0;       //wielkość komponentu
-        constraint.weighty = 0.1;   //Większa przestrzeń
-        constraint.anchor = GridBagConstraints.PAGE_START; //Miejsce w panelu
-        constraint.insets = new Insets(40,20,0,20);  //odległość od granicy
-        constraint.gridx = 1;       // położenie x
-        constraint.gridwidth = 2;   //  szerokość kratki
-        constraint.gridy = 2;       //położenie y
+        constraint.fill = GridBagConstraints.HORIZONTAL;
+        constraint.ipady = 0;
+        constraint.weighty = 0.1;
+        constraint.anchor = GridBagConstraints.PAGE_START;
+        constraint.insets = new Insets(40,20,0,20);
+        constraint.gridx = 1;
+        constraint.gridwidth = 2;
+        constraint.gridy = 2;
         sideBlockDescriptions.setForeground(Color.RED);
         add(sideBlockDescriptions, constraint);
 
         totalScoreDescription= new JLabel("Wynik totalny: " + totalScore);
-        constraint.fill = GridBagConstraints.HORIZONTAL; //Położenie wertykalne/horyzontalne
-        constraint.ipady = 0;       //wielkość komponentu
-        constraint.weighty = 0.1;   //Większa przestrzeń
-        constraint.anchor = GridBagConstraints.PAGE_START; //Miejsce w panelu
-        constraint.insets = new Insets(20,35,0,20);  //odległość od granicy
-        constraint.gridx = 1;       // położenie x
-        constraint.gridwidth = 2;   //  szerokość kratki
-        constraint.gridy = 3;       //położenie y
+        constraint.fill = GridBagConstraints.HORIZONTAL;
+        constraint.ipady = 0;
+        constraint.weighty = 0.1;
+        constraint.anchor = GridBagConstraints.PAGE_START;
+        constraint.insets = new Insets(20,35,0,20);
+        constraint.gridx = 1;
+        constraint.gridwidth = 2;
+        constraint.gridy = 3;
         totalScoreDescription.setForeground(Color.PINK);
         add(totalScoreDescription, constraint);
 
@@ -193,26 +129,14 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         pauseLabel.setVisible(false);
     }
 
-    /**
-     * Metoda ustawiająca domyślne wymiary panelu
-     * @param width szerokość
-     * @param height wysokość
-     */
     public void defaultDimensions(int width, int height) {
         sideBlockDimensions = new Dimension((int) Math.round(0.3 * width), height);
         setPreferredSize(sideBlockDimensions);
         repaint();
     }
 
-    /**
-     * Metoda pobierająca obecny wynik
-     * @return
-     */
     public int getCurrentScore(){ return currentScore; }
 
-    /**
-     * Wątek panelu bocznego
-     */
     public void run(){
         try {
             while (true) {
@@ -227,28 +151,16 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         } catch (Exception e){}
     }
 
-    /**
-     * Metoda dodajaca słuchacza
-     * @param listener
-     */
     @Override
     public void add(IGameFrame listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Metoda usuwająca słuchacza
-     * @param listener
-     */
     @Override
     public void remove(IGameFrame listener) {
         listeners.remove(listeners.indexOf(listener));
     }
 
-    /**
-     * Metoda zawiadamiająca słuchaczy o zajściu zdarzenia
-     * @param event
-     */
     @Override
     public void notify(SideBlockEvent event) {
         for(IGameFrame listener : listeners){
@@ -256,17 +168,9 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         }
     }
 
-    /**
-     * Metoda obsługująca zdarzenie panelu bocznego
-     * @param event
-     */
     @Override
     public void actionPerformed(ActionEvent event) {}
 
-    /**
-     * Metoda obsługująca zdarzenie z panelu gry
-     * @param event
-     */
     @Override
     public void gameAreaEvent(GameAreaEvent event){
         String cmd = event.getCommand();

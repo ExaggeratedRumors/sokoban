@@ -14,7 +14,6 @@
     <menuWidth>320</menuWidth>
     <menuHeight>425</menuHeight>
 
-
     <gameRows>25</gameRows>
     <gameCols>25</gameCols>
     <gameHeight>600</gameHeight>

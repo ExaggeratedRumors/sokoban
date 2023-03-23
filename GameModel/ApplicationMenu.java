@@ -11,46 +11,16 @@ import Event.GameEvent;
 import static Config.Param.*;
 
 
-/**
- * Ramka rozszerzająca JFrame wobec czego obiekt tej klasy będzie oknem którego wnętrze ustalamy
- */
 public class ApplicationMenu extends JFrame implements ActionListener, IApplicationMenu {
-    /**
-     * Tytuł
-     */
     private JLabel title;
-    /**
-     * Rozmiar panelu
-     */
     private Dimension menuDimensions;
-    /**
-     * Panel w którym znajdują się wszystkie etykiety i przyciski
-     */
     private JPanel menuPanel;
-    /**
-     * Przycisk nowej gry
-     */
     private JButton newGameButton;
-    /**
-     * Przycisk wyświetlajacy listę wyników
-     */
     private JButton ladderButton;
-    /**
-     * Przycisk opuszczenia aplikacji
-     */
     private JButton exitGameButton;
-    /**
-     * Obiekt okna głownego gry
-     */
     private GameFrame mainWindow;
-    /**
-     * Obiekt listy wyników
-     */
     private Scoreboard scoreboard;
 
-    /**
-     * Metoda uruchamiająca menu
-     */
     public void runMenu() {
         menuDimensions = new Dimension(menuWidth, menuHeight);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -61,9 +31,6 @@ public class ApplicationMenu extends JFrame implements ActionListener, IApplicat
         setVisible(true);
     }
 
-    /**
-     * Inicializator interfejsfu graficznego
-     */
     private void menuLayout() {
         menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel,BoxLayout.Y_AXIS));
@@ -112,10 +79,6 @@ public class ApplicationMenu extends JFrame implements ActionListener, IApplicat
         getContentPane().add(menuPanel);
     }
 
-    /**
-     * Akcja po naciśnięciu przycisku
-     * @param event obiekt zdarzenia po wykonaniu akcji w menu
-     */
     @Override
     public void actionPerformed(ActionEvent event) {
         String cmd = event.getActionCommand();
@@ -152,10 +115,6 @@ public class ApplicationMenu extends JFrame implements ActionListener, IApplicat
         }
     }
 
-    /**
-     * Obsługa zdarzenia wywołanego po skończeniu gry
-     * @param event
-     */
     @Override
     public void applicationMenuEvent(GameEvent event) {
         String cmd = event.getCommand();

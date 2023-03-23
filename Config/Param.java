@@ -7,147 +7,42 @@ import java.io.File;
 
 public final class Param {
 
-    //===============================================
-    //Stałe do menu
-    //===============================================
 
-    /**
-     * Boczna granica menu
-     */
     public static int borderHorizontal;
-    /**
-     * Wertykalna granica menu
-     */
     public static int borderVertical;
-    /**
-     * Szerokość przerwy między przyciskami
-     */
     public static int rigidWidth;
-    /**
-     * Wysokosć przerwy między przeciskami
-     */
     public static int rigidHeight;
-    /**
-     * Szerokość przycisku Nowej gry
-     */
     public static int newGameButtonWidth;
-    /**
-     * Wysokość przycisku Nowej gry
-     */
     public static int newGameButtonHeight;
-    /**
-     * Szerokość przycisku tabeli wyników
-     */
     public static int ladderButtonWidth;
-    /**
-     * Wysokość przycisku tabeli wyników
-     */
     public static int ladderButtonHeight;
-    /**
-     * Szerokość przycisku wyjścia
-     */
     public static int exitButtonWidth;
-    /**
-     * Wysokość przycisku wyjścia
-     */
     public static int exitButtonHeight;
-    /**
-     * Szerokość okna menu
-     */
     public static int menuWidth;
-    /**
-     * Wysokość okna menu
-     */
     public static int menuHeight;
 
-    //===============================================
-    //Stałe do gry
-    //===============================================
-    /**
-     * Liczba kolumn layoutu
-     */
     public static int gameCols;
-    /**
-     * Liczba wierszy layoutu
-     */
     public static int gameRows;
-    /**
-     * wysokość planszy
-     */
     public static int gameHeight;
-    /**
-     * szerokość planszy
-     */
     public static int gameWidth;
-    /**
-     * szerokość bloku bocznego
-     */
     public static int sideBlockWidth;
-    /**
-     * Wysokość bloku bocznego
-     */
     public static int sideBlockHeight;
-    /**
-     * Pula punktów
-     */
     public static int scorePool;
-    /**
-    * szerokość pola
-    */
     public static int fieldWidth;
-    /**
-     * Kolor pola gracza
-     */
     public static int playerColor;
-    /**
-     * Kolor podłogi
-     */
     public static int floorColor;
-    /**
-     * Kolor ściany
-     */
     public static int wallColor;
-    /**
-     * Kolor kolor punktu docelowego
-     */
     public static int destinationPointColor;
-    /**
-     * Kolor skrzyni
-     */
     public static int boxColor;
-    /**
-     * Liczba użyć resetu planszy
-     */
     public static int numberOfResets;
-    /**
-     * Liczba użyć mechanizmu pociągniecia bloku
-     */
     public static int numberOfBoxPull;
-    /**
-     * ścieżka mapy
-     */
     public static String mapPath;
-    /**
-     * Trzon nazwy mapy
-     */
     public static String mapName="map";
-    /**
-     * Liczba map
-     */
     public static int numberOfMaps;
-    /**
-     * ścieżka pliku configuracyjnego
-     */
+
     public static final String configParams="params.xml";
-    /**
-     * Statyczna metoda pozwalająca na używanie stałych z pliku konfiguracyjnego globalnie
-     */
     static{ parseParam(); }
 
-
-    /**
-     * Parsowanie pól
-     */
     public static void parseParam (){
         try {
 
@@ -175,7 +70,7 @@ public final class Param {
             menuHeight=Integer.parseInt(doc.getElementsByTagName("menuHeight").item(0).getTextContent());
 
             ///////////////////////////
-            // GRA
+            // GAME
             ///////////////////////////
             gameRows=Integer.parseInt(doc.getElementsByTagName("gameRows").item(0).getTextContent());
             gameCols=Integer.parseInt(doc.getElementsByTagName("gameCols").item(0).getTextContent());

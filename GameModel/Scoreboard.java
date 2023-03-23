@@ -18,66 +18,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
-/**
- * Klasa panelu wyników
- */
 public class Scoreboard extends JPanel {
 
-    /**
-     * Klasa pojedynczego wyniku
-     */
     private class Score{
-        /**
-         * Nazwa gracza
-         */
         private String nickName;
-        /**
-         * Wynik
-         */
         private int score;
-
-        /**
-         * Konstruktor
-         * @param nickName
-         * @param score
-         */
         public Score(String nickName, int score){
             this.nickName=nickName;
             this.score=score;
         }
-
-        /**
-         * Metoda pobierająca nazwę gracza
-         * @return nickname
-         */
         public String getNickName() {
             return nickName;
         }
-
-        /**
-         * Metoda pobierająca liczbę punków
-         * @return
-         */
         public int getScore() {
             return score;
         }
     }
-
-    /**
-     * Lista obiektów klasy wyników
-     */
     ArrayList<Score> scoreLadder;
-    /**
-     * Liczba pozycji
-     */
     public int numberOfScores;
-
-    /**
-     * Konstruktor
-     * @param panelWidth szerokość okna
-     * @param panelHeight wysokość okna
-     * @param menuListener listener menu gry
-     */
     public Scoreboard(int panelWidth, int panelHeight, ActionListener menuListener) {
         numberOfScores=15;
         setLayout(new BorderLayout());
@@ -90,10 +48,6 @@ public class Scoreboard extends JPanel {
         setBackground(new Color(12629968));
         setVisible(true);
     }
-
-    /**
-     * Metoda pobierająca wyniki z pliku
-     */
     private void loadScoreboard() {
         try {
             File xmlInputFile = new File("Config\\scoreboard.xml");
@@ -116,10 +70,6 @@ public class Scoreboard extends JPanel {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Metoda zapisująca wynik do pliku
-     */
     private void saveScore(){
         try{
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -146,11 +96,8 @@ public class Scoreboard extends JPanel {
             transformer.transform(docSource, result);
         }
         catch (Exception e){}
-}
+    }
 
-    /**
-     * Metoda tworząca listę wyników
-     */
     private JTable createTable() {
         sortLadder();
         saveScore();
@@ -175,11 +122,6 @@ public class Scoreboard extends JPanel {
         return scoreLadder;
     }
 
-    /**
-     * Metoda tworząca przycisk powrotu do menu
-     * @param menuListener listener menu
-     * @return przycisk powrotu do menu
-     */
     private JButton createBackButton(ActionListener menuListener) {
         JButton backButton = new JButton("Powrót do menu");
         backButton.setFocusable(false);
@@ -188,10 +130,6 @@ public class Scoreboard extends JPanel {
         return backButton;
     }
 
-    /**
-     * Metoda tworząca tytuł okna
-     * @return tytuł okna
-     */
     private JLabel createTitle() {
         JLabel title = new JLabel("<html><br>Lista najlepszych wyników<br><br></html>");
         title.setHorizontalAlignment(JLabel.CENTER);
@@ -201,9 +139,6 @@ public class Scoreboard extends JPanel {
         return title;
     }
 
-    /**
-     * Metoda sortująca listę wyników
-     */
     public void sortLadder() {
         Collections.sort(scoreLadder, (pair, t1) -> {
             if(pair.getScore()<t1.getScore()) return 1;
@@ -212,20 +147,12 @@ public class Scoreboard extends JPanel {
         });
     }
 
-    /**
-     * Metoda dodająca nowy wynik
-     * @param nickname nazwa gracza
-     * @param score wynik
-     */
     public void newScore(String nickname, int score){
         scoreLadder.add(new Score(nickname, score));
         sortLadder();
         saveScore();
     }
 
-    /**
-     * Pobieranie najniższego wyniku z listy
-     */
     public int getLowestScore(){
         return scoreLadder.get(numberOfScores-1).getScore();
     }

@@ -15,79 +15,29 @@ import Interface.IGameFrame;
 import Interface.ISideBlock;
 import static Config.Param.*;
 
-/**
- * Klasa odpowiadająca za okno gry (plansza gry + panel boczny)
- */
+
 public class GameFrame extends JFrame implements IGameFrame, ComponentListener, ActionListener{
-    /**
-     * Wynik
-     */
+
     private int score;
-    /**
-     * Najniższy wynik na liście
-     */
     private int lowestScore;
-    /**
-     * Szerokość okna
-     */
     private int width;
-    /**
-     * Wysokość okna
-     */
     private int height;
-    /**
-     * Obiekt bocznego panelu
-     */
     private SideBlock sideBlock;
-    /**
-     * Status gry
-     */
     private Status status;
-    /**
-     * Obiekt zdarzenia
-     */
     private ActionListener listener;
-    /**
-     * Obiekt graficzny
-     */
     private Graphics graphics;
-    /**
-     * Obiekt graficzny
-     */
     private Image gObject;
-    /**
-     * Obiekt planszy gry
-     */
     private GameArea gameArea;
-    /**
-     * Lista listenerów informowanych o zdarzeniach
-     */
     private ArrayList<IApplicationMenu> listeners;
-    /**
-     * Nazwa gracza
-     */
     private String nickname;
-    /**
-     * Obiekt wątku głównego
-     */
     private Thread thread;
-    /**
-     * Obiekt wątku panelu bocznego
-     */
     private Thread sbThread;
-    /**
-     * Typ wyliczeniowy statusu gry
-     */
     private enum Status{
         RUNNING,
         PAUSE,
         GAMEOVER
     }
 
-    /**
-     * Konstruktor
-     * @param listener
-     */
     public GameFrame(ActionListener listener, int lowestScore) {
         this.lowestScore=lowestScore;
         nickname=null;
@@ -109,9 +59,6 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         thread.start();
     }
 
-    /**
-     * Układ ekranu gry
-     */
     private void setGameLayout(){
         gameArea = new GameArea(width, height);
         score = gameArea.getPool();
@@ -120,9 +67,6 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         getContentPane().add(sideBlock,BorderLayout.EAST);
     }
 
-    /**
-     * Metoda ustawiająca rozmiary okna gry
-     */
     private void setFrame(){
         width = gameWidth;
         height = gameHeight;
@@ -132,11 +76,6 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         setVisible(true);
     }
 
-    /**
-     * Metoda odpowiedzialna za zakończenie gry
-     * @param mapNumber
-     * @param score
-     */
     private void gameOver(int mapNumber, int score){
         status = Status.GAMEOVER;
         gameArea.setGameOver();
@@ -170,28 +109,16 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         }
     }
 
-    /**
-     * Dodawanie listenerów
-     * @param listener
-     */
     @Override
     public void add(IApplicationMenu listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Usuwanie listenerów
-     * @param listener
-     */
     @Override
     public void remove(IApplicationMenu listener) {
         listeners.remove(listeners.indexOf(listener));
     }
 
-    /**
-     * Notyfikacja o evencie wszystkich listenerów
-     * @param event obiekt zdarzenia
-     */
     @Override
     public void notify(GameEvent event) {
         for(IApplicationMenu listener : listeners){
@@ -199,10 +126,6 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         }
     }
 
-    /**
-     * Obsługa zdarzeń panelu bocznego
-     * @param event Obiekt panelu informacyjnego
-     */
     public void sideBlockEvent(SideBlockEvent event) {
         String command=event.getCommand();
         switch (command){
@@ -217,41 +140,21 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         }
     }
 
-    /**
-     * Metoda odpowiedzialna za ruch komponentów
-     * @param event obiekt zdarzenia komponentu graficznego
-     */
     @Override
     public void componentMoved(ComponentEvent event){}
 
-    /**
-     * Metoda odpowiedzialna za pokazywanie komponentów
-     * @param event obiekt zdarzenia komponentu graficznego
-     */
     @Override
     public void componentShown(ComponentEvent event){}
 
-    /**
-     * Metoda odpowiedzialna za ukrywanie komponentów
-     * @param event obiekt zdarzenia komponentu graficznego
-     */
     @Override
     public void componentHidden(ComponentEvent event){}
 
-    /**
-     * Metoda odpowiedzialna za zmianę rozmiarów komponentów
-     * @param event obiekt zdarzenia komponentu graficznego
-     */
     @Override
     public void componentResized(ComponentEvent event) {
         sideBlock.defaultDimensions(getContentPane().getWidth(), getContentPane().getHeight());
         gameArea.defaultDimensions(getContentPane().getWidth(), getContentPane().getHeight());
     }
 
-    /**
-     * Metoda odpowiedzialna za rysowanie komponentów na planszy
-     * @param g
-     */
     @Override
     public void paint(Graphics g)
     {
@@ -263,18 +166,10 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         g.drawImage(gObject,0,0,this);
     }
 
-    /**
-     * Metoda odpowiedzialna za odrysowywanie komponentów
-     * @param g
-     */
     private void draw(Graphics g){
         repaint();
     }
 
-    /**
-     * Metoda obsługująca zdarzenie w głównym oknie gry
-     * @param event
-     */
     @Override
     public void actionPerformed(ActionEvent event) {
         String cmd = event.getActionCommand();
@@ -286,9 +181,6 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         }
     }
 
-    /**
-     * Pauzowanie rozgrywki na poziomie głównego ekranu gry
-     */
     public void pause(){
         if(status==Status.PAUSE) status=Status.RUNNING;
         else status=Status.PAUSE;

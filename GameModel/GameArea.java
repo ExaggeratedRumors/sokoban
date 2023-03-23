@@ -15,124 +15,37 @@ import MapObjects.*;
 import Interface.IGameArea;
 import static Config.Param.*;
 
-/**
- * Klasa odpowiadająca za obszar gry i planszę
- */
+
 public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable{
-    /**
-     * Wysokość panelu
-     */
+
     private int panelHeight;
-    /**
-     * Szerokość panelu
-     */
     private int panelWidth;
-    /**
-     * liczba kolumn siatki
-     */
     private int colsNumber;
-    /**
-     * Liczba wierszy siatki
-     */
     private int rowsNumber;
-    /**
-     * Tablica obiektów planszy
-     */
     private Field[][] fields;
-    /**
-     * Tablica obiektów pól zakrytych
-     */
     private Field[][] backgroundFields;
-    /**
-     * Obiekt pierwszego gracza
-     */
     private Player player;
-    /**
-     * Wymiary okna
-     */
     private Dimension gameScreenSize;
-    /**
-     * Kolor tła
-     */
     private Color colors[] = {new Color(2293760), new Color(2303302), new Color(2303252)};
-    /**
-     * Trzon nazwy pliku mapy
-     */
     private String mapTagName;
-    /**
-     * Obiekt ruchu gracza
-     */
     private Move playerSetUp;
-    /**
-     * Numer obecnej mapy
-     */
     private int currentMap;
-    /**
-     * Liczba pozostałych bloków do ułożenia
-     */
     private int blocksAmounts;
-    /**
-     * Liczba graczy
-     */
     private int numberOfPlayers;
-    /**
-     * Lista słuchaczy z panelu bocznego gry
-     */
     private ArrayList<ISideBlock> listeners;
-    /**
-     * Pula punktów obecnej mapy
-     */
     private int pool;
-    /**
-     * Obecna liczba punktów
-     */
     private int score;
-    /**
-     * Liczba możliwych pociągnięć skrzyń
-     */
     private int boxPull;
-    /**
-     * Liczba możliwych zresetowań planszy
-     */
     private int reset;
-    /**
-     * Typ boolowski określający czy przebiega proces resetu mapy
-     */
     private boolean resetProcess;
-    /**
-     * Typ boolowski określający czy przebiega pauza
-     */
     private boolean paused;
-    /**
-     * Typ boolowski określający odwrotny przebieg ruchu
-     */
     private boolean reverseMove;
-    /**
-     * Typ boolowski określający czy przebiega proces animacji
-     */
     private boolean animation;
-    /**
-     * Typ boolowski określający czy przebiega proces ruchu
-     */
     private boolean move;
-    /**
-     * Typ boolowski określający czy gra została zakończona
-     */
     private boolean gameOver;
-    /**
-     * Obiekt zdarzenia ruchu
-     */
     private MoveEvent moveEvent;
-    /**
-     * Liczba klatek animacji
-     */
     private int fps;
 
-    /**
-     * Konstruktor planszy gry
-     * @param width szerokość okna
-     * @param height wysokość okna
-     */
     public GameArea(int width, int height) {
         boxPull=numberOfBoxPull;
         reset=numberOfResets;
@@ -151,9 +64,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         loadMap();
     }
 
-    /**
-     * Dodawanie obserwatorów do wszystkich pól gry
-     */
     public void addFieldListener(){
         playerSetUp.add(this);
         for(Field[] fieldArray : backgroundFields)
@@ -170,11 +80,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
-    /**
-     * Metoda ustawiająca wymiary okna
-     * @param width szerokość okna
-     * @param height wysokość okna
-     */
     public void setFrame(int width, int height){
         panelHeight = height;
         panelWidth = (int)Math.round(width*0.6);
@@ -182,11 +87,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         setPreferredSize(gameScreenSize);
     }
 
-    /**
-     * Ustawianie rozmiarów obiektów w zależności od rozmiarów okna gry
-     * @param height
-     * @param width w
-     */
     public void defaultDimensions(int width,int height) {
         panelHeight = height;
         panelWidth = (int)Math.round(width*0.6);
@@ -206,9 +106,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         repaint();
     }
 
-    /**
-     * Metoda ładująca mapę
-     */
     private void loadMap(){
         mapTagName = mapName+currentMap;
         getMapArray();
@@ -216,32 +113,17 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         this.setFocusable(true);
     }
 
-    /**
-     * Metoda obsługująca wciśnięcie przycisku
-     * @param keyEvent zdarzenie związane z przyciskiem
-     */
     @Override
     public void keyTyped(KeyEvent keyEvent) { }
 
-    /**
-     * Metoda obsługująca naciśnięcie przycisku
-     * @param keyEvent zdarzenie związane z przyciskiem
-     */
     @Override
     public void keyPressed(KeyEvent keyEvent) { playerSetUp.keyPressed(keyEvent); }
 
-    /**
-     * Metoda obsługująca zwolnienie przycusku.
-     * @param keyEvent zdarzenie związane z przyciskiem
-     */
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         playerSetUp.keyReleased(keyEvent);
     }
 
-    /**
-     * Główny wątek programu
-     */
     @Override
     public void run() {
         try {
@@ -295,9 +177,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
-    /**
-     * Metoda sprawdzająca czy wszystkie skrzynie są na pozycjach docelowych
-     */
     public boolean checkPosition(){
         if(!resetProcess) {
             int temp = 0;
@@ -313,25 +192,15 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         return false;
     }
 
-    /**
-     * Metoda wywołująca pauzę
-     */
     public void pause(){
         if(paused) paused=false;
         else paused=true;
     }
 
-    /**
-     * Metoda wywołująca koniec gry
-     */
     public void setGameOver(){
         if(!gameOver) gameOver=true;
     }
 
-    /**
-     * Metoda tworząca tablicę pól planszy
-     * @return  zwraca dwuwymiarową tablicę obiektów
-     */
     private Field[][] getMapArray() {
         try {
             Path mapLevelPath = Paths.get(mapPath, mapTagName+".txt");
@@ -404,16 +273,8 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         return fields;
     }
 
-    /**
-     * Pobranie puli punktów obecnej mapy
-     * @return pula punków
-     */
     public int getPool(){ return pool; }
 
-    /**
-     * Metoda rysująca tło i obiekty planszy
-     * @param g parametr graficzny
-     */
     public void paint(Graphics g) {
         drawBackground(g);
         for(int n = 0; n < rowsNumber; n++) {
@@ -428,10 +289,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
-    /**
-     * Metoda tworząca tło pola gry
-     * @param g parametr graficzny
-     */
     public void drawBackground(Graphics g) {
         for (int i = 0; i  <= getHeight(); i += 1) {
             g.setColor(colors[i % colors.length]);
@@ -439,28 +296,16 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
-    /**
-     * Metoda dodajaca słuchacza
-     * @param listener
-     */
     @Override
     public void add(ISideBlock listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Metoda usuwająca słuchacza
-     * @param listener
-     */
     @Override
     public void remove(ISideBlock listener) {
         listeners.remove(listeners.indexOf(listener));
     }
 
-    /**
-     * Metoda zawiadamiająca słuchaczy panelu bocznego o zajściu zdarzenia
-     * @param event
-     */
     @Override
     public void notify(GameAreaEvent event) {
         for(ISideBlock listener : listeners){
@@ -468,17 +313,9 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
-    /**
-     * Metoda obsługująca zdarzenie związane z polami gry
-     * @param event
-     */
     @Override
     public void fieldEvent(FieldEvent event){}
 
-    /**
-     * Metoda obsługująca zdarzenie związane z ruchem obiektów
-     * @param event
-     */
     @Override
     public void moveEvent(MoveEvent event)
     {

@@ -2,14 +2,7 @@ package Interface;
 
 import Event.GameEvent;
 
-/**
- * Interfejs okna menu
- */
-public interface IApplicationMenu {
 
-    /**
-     * Obsługa zdarzenia po zakończeniu gry
-     * @param event Obiekt zdarzenia
-     */
+public interface IApplicationMenu {
     void applicationMenuEvent(GameEvent event);
 }

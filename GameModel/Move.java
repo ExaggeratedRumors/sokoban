@@ -10,33 +10,12 @@ import Interface.IMove;
 import MapObjects.Field;
 import MapObjects.Player;
 
-/**
- * Klasa odpowiedzialna za ruch obiektów na planszy
- */
 public class Move implements KeyListener, IMove{
-    /**
-     * Pozycja gracza w kolumnach
-     */
     private int xPosition;
-    /**
-     * Pozycja gracza w rzędach
-     */
     private int yPosition;
-    /**
-     * Obiekt postaci gracza
-     */
     private Player player;
-    /**
-     * Tablica obiektów pól mapy
-     */
     private Field[][] fields;
-    /**
-     * Obiekt kierunku ruchu gracza
-     */
     private Direction direction;
-    /**
-     * Pole wyliczeniowe możliwych kierunków ruchu
-     */
     public enum Direction{
         UP,
         DOWN,
@@ -44,17 +23,8 @@ public class Move implements KeyListener, IMove{
         RIGHT,
         STAY
     }
-    /**
-     * Lista słuchaczy
-     */
     private ArrayList<IGameArea> listeners;
 
-    /**
-     * Konstruktor
-     * @param x pozycja gracza w osi x
-     * @param y pozycja gracza w osi y
-     * @param player obiekt postaci gracza
-     */
     public Move(int x, int y, Player player) {
         listeners = new ArrayList<>();
         xPosition = x;
@@ -62,35 +32,19 @@ public class Move implements KeyListener, IMove{
         this.player = player;
     }
 
-    /**
-     * Metoda zapisująca tablicę obiektów pól gry
-     * @param fields tablica obiektów klasy Field
-     */
     public void setFields(Field[][] fields){
         this.fields = fields;
     }
 
-    /**
-     * Metoda obsługująca zdarzenie wciśnięcia przycisku
-     * @param event zdarzenie
-     */
     @Override
     public void keyTyped(KeyEvent event){}
 
-    /**
-     * Metoda obsługująca zdarzenie zwolnienia przycisku
-     * @param event zdarzenie
-     */
     @Override
     public void keyReleased(KeyEvent event){
         int keyCode = event.getKeyCode();
         if(keyCode == event.VK_UP ||keyCode == event.VK_DOWN ||keyCode == event.VK_LEFT || keyCode == event.VK_RIGHT) direction = Direction.STAY;
     }
 
-    /**
-     * Metoda obsługująca zdarzenie naciśnięcia przycisku
-     * @param event
-     */
    @Override
     public void keyPressed(KeyEvent event) {
        int keyCode = event.getKeyCode();
@@ -121,9 +75,6 @@ public class Move implements KeyListener, IMove{
        }
    }
 
-    /**
-     * Metoda ustawiająca kierunek ruchu gracza
-     */
     public int[] setOffset()
     {
         int[] offsetArray = {0,0};
@@ -134,9 +85,6 @@ public class Move implements KeyListener, IMove{
         return offsetArray;
     }
 
-    /**
-     * Metoda sprawdzająca możliwość użycia funkcji pociągnięcia skrzyni
-     */
     public void checkPullBox() {
         int surrounding = 0;
         int[] offsetArray = {0,0};
@@ -167,9 +115,6 @@ public class Move implements KeyListener, IMove{
         }
     }
 
-    /**
-     * Metoda odpowiedzialna za sprawdzanie warunków ruchu
-     */
     public void getMove() {
         int[] offsetArray = setOffset();
         if(xPosition + offsetArray[0] >= 0 && yPosition + offsetArray[1] >= 0){
@@ -184,12 +129,6 @@ public class Move implements KeyListener, IMove{
         }
     }
 
-    /**
-     * Metoda odpowiedzialna za zmianę lokalizacji obiektów na planszy
-     * @param offsetArray tablica ruchu (x,y)
-     * @param collision sprawdzanie czy na drodze jest kolizja (skrzynia)
-     * @param reverse sprawdzanie czy ruch jest odwrócony (ciągnięcie skrzyni)
-     */
     public void setMove(int[] offsetArray, boolean collision, boolean reverse){
         if(!collision && !reverse){
             fields[yPosition][xPosition] = player.getPreviousField();
@@ -240,12 +179,6 @@ public class Move implements KeyListener, IMove{
         }
     }
 
-    /**
-     * Metoda odpowiedzialna za płynne przejście obiektów
-     * @param direction tablica ruchu (x,y)
-     * @param collision sprawdzanie czy na drodze jest kolizja (skrzynia)
-     * @param reverse sprawdzanie czy ruch jest odwrócony (ciągnięcie skrzyni)
-     */
     public void animation(int[] direction, boolean collision, boolean reverse){
         player.setOffset(direction[0],direction[1]);
         fields[yPosition][xPosition]=player;
@@ -266,11 +199,6 @@ public class Move implements KeyListener, IMove{
         }
     }
 
-    /**
-     * Metoda ustawiająca rozmiary obiektów w zależności od rozmiarów okna gry
-     * @param panelHeight wysokość panelu
-     * @param panelWidth szerokość panelu
-     */
     public void refreshPosition(int panelWidth,int panelHeight){
         for(Field[] fieldArray : fields)
         {
@@ -280,30 +208,14 @@ public class Move implements KeyListener, IMove{
         }
     }
 
-    /**
-     * Metoda zwracająca tablicę obiektów pól gry
-     * @return tablica obiektów pól gry
-     */
-   public Field[][] getFields(){ return fields; }
+    public Field[][] getFields(){ return fields; }
 
-    /**
-     * Metoda dodajaca słuchacza
-     * @param listener
-     */
     @Override
     public void add(IGameArea listener){listeners.add(listener);}
 
-    /**
-     * Metoda usuwająca słuchacza
-     * @param listener
-     */
     @Override
     public void remove(IGameArea listener){ listeners.remove(listeners.indexOf(listener)); }
 
-    /**
-     * Metoda zawiadamiająca słuchaczy o zajściu zdarzenia
-     * @param event
-     */
     @Override
     public void notify(MoveEvent event){
         for(IGameArea listener : listeners){
