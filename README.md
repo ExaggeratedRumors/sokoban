@@ -1,5 +1,29 @@
-# Sokoban
+## Sokoban
 
-2D logic game of moving blocks throught pregenerated map.
+![Windows support](https://img.shields.io/badge/Platform-Windows-lightgrey) ![Java JDK requirement](https://img.shields.io/badge/JDK-17-green)
 
-Graphic implementation based on AWT framework.
+2D logic game of moving blocks through pregenerated map.
+
+![Preview](images/preview.png)
+
+## Technologies
+
+- Java Swing
+- Java Awt
+
+## Requirements
+
+- JDK 11
+- Gradle 8.0.2
+
+## Application execution
+
+1. Make sure your JAVA_HOME paths to jdk directory.
+2. Clone repository:
+```
+git clone https://github.com/ExaggeratedRumors/sokoban.git
+```
+3. Open application root directory and put command to run artifact:
+```
+java -jar sokoban.jar
+```

@@ -171,6 +171,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
     @Override
     public void actionPerformed(ActionEvent event) {}
 
+
     @Override
     public void gameAreaEvent(GameAreaEvent event){
         String cmd = event.getCommand();
