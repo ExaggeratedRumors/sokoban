@@ -13,8 +13,7 @@
 
 ## Requirements
 
-- JDK 11
-- Gradle 8.0.2
+- JDK 17
 
 ## Application execution
 
