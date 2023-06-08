@@ -18,20 +18,16 @@ import static Config.Param.*;
 
 public class GameFrame extends JFrame implements IGameFrame, ComponentListener, ActionListener{
 
-    private int score;
-    private int lowestScore;
+    private final int lowestScore;
     private int width;
     private int height;
     private SideBlock sideBlock;
     private Status status;
-    private ActionListener listener;
-    private Graphics graphics;
-    private Image gObject;
+    private final ActionListener listener;
     private GameArea gameArea;
-    private ArrayList<IApplicationMenu> listeners;
+    private final ArrayList<IApplicationMenu> listeners;
     private String nickname;
-    private Thread thread;
-    private Thread sbThread;
+
     private enum Status{
         RUNNING,
         PAUSE,
@@ -52,8 +48,8 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
 
         listeners = new ArrayList<>();
         sideBlock.add((IGameFrame)this);
-        thread = new Thread(gameArea);
-        sbThread = new Thread(sideBlock);
+        Thread thread = new Thread(gameArea);
+        Thread sbThread = new Thread(sideBlock);
         gameArea.add((ISideBlock)sideBlock);
         sbThread.start();
         thread.start();
@@ -61,9 +57,9 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
 
     private void setGameLayout(){
         gameArea = new GameArea(width, height);
-        score = gameArea.getPool();
+        int score = gameArea.getPool();
         getContentPane().add(gameArea,BorderLayout.CENTER);
-        sideBlock = new SideBlock(width, height, listener, score);
+        sideBlock = new SideBlock(width, height, score);
         getContentPane().add(sideBlock,BorderLayout.EAST);
     }
 
@@ -82,7 +78,7 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         if(mapNumber<=numberOfMaps) {
             score=0;
         }
-        else if(mapNumber>numberOfMaps && score>=lowestScore) {
+        else if(score >= lowestScore) {
             while (nickname == null || nickname.length() == 0) {
                 nickname = JOptionPane.showInputDialog(this, "Wygrałeś! Zdobyłeś "+score+" punków. Proszę podać nazwę gracza", "Nazwa gracza", JOptionPane.INFORMATION_MESSAGE);
                 if (nickname == null) {
@@ -93,19 +89,13 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
         Object[] options={
                 "Graj od nowa","Powrót do menu","Lista najlepszych wyników"
         };
-        switch(JOptionPane.showOptionDialog(this,  "Ukończono grę na "+mapNumber+" mapie i zdobyto "+score+" punktów.","GameOver"
-                ,JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,options[1])) {
-            case JOptionPane.YES_OPTION:
-                notify(new GameEvent("Play",nickname,score));
-                break;
-            case JOptionPane.NO_OPTION:
-                notify(new GameEvent("Back",nickname,score));
-                break;
-            case JOptionPane.CANCEL_OPTION:
-                notify(new GameEvent("ScoreLabel",nickname,score));
-                break;
-            default:
-                break;
+        switch (JOptionPane.showOptionDialog(this, "Ukończono grę na " + mapNumber + " mapie i zdobyto " + score + " punktów.", "GameOver"
+                , JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
+            case JOptionPane.YES_OPTION -> notify(new GameEvent("Play", nickname, score));
+            case JOptionPane.NO_OPTION -> notify(new GameEvent("Back", nickname, score));
+            case JOptionPane.CANCEL_OPTION -> notify(new GameEvent("ScoreLabel", nickname, score));
+            default -> {
+            }
         }
     }
 
@@ -116,7 +106,7 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
 
     @Override
     public void remove(IApplicationMenu listener) {
-        listeners.remove(listeners.indexOf(listener));
+        listeners.remove(listener);
     }
 
     @Override
@@ -127,16 +117,11 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
     }
 
     public void sideBlockEvent(SideBlockEvent event) {
-        String command=event.getCommand();
-        switch (command){
-            case "OutOfPoints":
-                gameOver(event.getMapNumber(),event.getScore());
-                break;
-            case "LastMap":
-                gameOver(event.getMapNumber(),event.getScore());
-                break;
-            default:
-                break;
+        String command=event.command();
+        switch (command) {
+            case "OutOfPoints", "LastMap" -> gameOver(event.mapNumber(), event.score());
+            default -> {
+            }
         }
     }
 
@@ -158,26 +143,23 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
     @Override
     public void paint(Graphics g)
     {
-        gObject=createImage(getWidth(),getHeight());
-        graphics = gObject.getGraphics();
+        Image gObject = createImage(getWidth(), getHeight());
+        Graphics graphics = gObject.getGraphics();
         super.paint(graphics);
-        draw(graphics);
+        draw();
         g.setColor(Color.black);
         g.drawImage(gObject,0,0,this);
     }
 
-    private void draw(Graphics g){
+    private void draw(){
         repaint();
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
         String cmd = event.getActionCommand();
-        switch (cmd) {
-            //Pauza
-            //
-            default:
-                break;
+        if ("Pause".equals(cmd)) {
+            pause();
         }
     }
 

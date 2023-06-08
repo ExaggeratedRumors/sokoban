@@ -1,12 +1,5 @@
 package Event;
 
-public class FieldEvent {
+public record FieldEvent(String command) {
 
-    private String command;
-    public FieldEvent(String command){
-        this.command=command;
-    }
-    public String getCommand() {
-        return command;
-    }
 }

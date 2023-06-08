@@ -24,15 +24,11 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
     private int rowsNumber;
     private Field[][] fields;
     private Field[][] backgroundFields;
-    private Player player;
-    private Dimension gameScreenSize;
-    private Color colors[] = {new Color(2293760), new Color(2303302), new Color(2303252)};
+    private final Color[] colors = {new Color(2293760), new Color(2303302), new Color(2303252)};
     private String mapTagName;
     private Move playerSetUp;
     private int currentMap;
-    private int blocksAmounts;
-    private int numberOfPlayers;
-    private ArrayList<ISideBlock> listeners;
+    private final ArrayList<ISideBlock> listeners;
     private int pool;
     private int score;
     private int boxPull;
@@ -44,7 +40,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
     private boolean move;
     private boolean gameOver;
     private MoveEvent moveEvent;
-    private int fps;
+    private final int fps;
 
     public GameArea(int width, int height) {
         boxPull=numberOfBoxPull;
@@ -53,7 +49,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         reverseMove=false;
         resetProcess=false;
         gameOver=false;
-        fps=32;
+        fps = 32;
         move=false;
         animation = false;
         listeners = new ArrayList<>();
@@ -83,7 +79,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
     public void setFrame(int width, int height){
         panelHeight = height;
         panelWidth = (int)Math.round(width*0.6);
-        gameScreenSize = new Dimension(panelWidth,panelHeight);
+        Dimension gameScreenSize = new Dimension(panelWidth, panelHeight);
         setPreferredSize(gameScreenSize);
     }
 
@@ -136,23 +132,23 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
                             animation = false;
                             for (int i = 0; i < fps; i++) {
                                 if (!paused) {
-                                    playerSetUp.animation(moveEvent.getDirection(), moveEvent.isCollision(), false);
+                                    playerSetUp.animation(moveEvent.direction(), moveEvent.collision(), false);
                                     Thread.sleep(9);
                                 } else i--;
                             }
-                            playerSetUp.setMove(moveEvent.getDirection(), moveEvent.isCollision(), false);
+                            playerSetUp.setMove(moveEvent.direction(), moveEvent.collision(), false);
                             move = false;
-                        } else if (animation && reverseMove) {
+                        } else if (animation) {
                             move = true;
                             animation = false;
                             reverseMove = false;
                             for (int i = 0; i < fps; i++) {
                                 if (!paused) {
-                                    playerSetUp.animation(moveEvent.getDirection(), moveEvent.isCollision(), true);
+                                    playerSetUp.animation(moveEvent.direction(), moveEvent.collision(), true);
                                     Thread.sleep(9);
                                 } else i--;
                             }
-                            playerSetUp.setMove(moveEvent.getDirection(), moveEvent.isCollision(), true);
+                            playerSetUp.setMove(moveEvent.direction(), moveEvent.collision(), true);
                             move = false;
                         }
                         fields = playerSetUp.getFields();
@@ -185,78 +181,73 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
                     temp += field.isCorrectPosition();
                 }
             }
-            blocksAmounts = temp;
-            if (temp == 0) return true;
-            else return false;
+            return temp == 0;
         }
         return false;
     }
 
     public void pause(){
-        if(paused) paused=false;
-        else paused=true;
+        paused = !paused;
     }
 
     public void setGameOver(){
         if(!gameOver) gameOver=true;
     }
 
-    private Field[][] getMapArray() {
+    private void getMapArray() {
         try {
             Path mapLevelPath = Paths.get(mapPath, mapTagName+".txt");
             byte[] tempMapArray = Files.readAllBytes(mapLevelPath);
 
-            String tempRows = "";
-            String tempCols = "";
-            String tempPool = "";
+            StringBuilder tempRows = new StringBuilder();
+            StringBuilder tempCols = new StringBuilder();
+            StringBuilder tempPool = new StringBuilder();
             int temp = 0;
 
             while((char)tempMapArray[temp] != ',')
             {
-                tempRows += (char)tempMapArray[temp];
+                tempRows.append((char) tempMapArray[temp]);
                 temp++;
             }
             temp++;
             while((char)tempMapArray[temp] != ',')
             {
-                tempCols += (char)tempMapArray[temp];
+                tempCols.append((char) tempMapArray[temp]);
                 temp++;
             }
             temp++;
             while((char)tempMapArray[temp] != '\r')
             {
-                tempPool += (char)tempMapArray[temp];
+                tempPool.append((char) tempMapArray[temp]);
                 temp++;
             }
-            rowsNumber = Integer.parseInt(tempRows);
-            colsNumber = Integer.parseInt(tempCols);
-            pool = Integer.parseInt(tempPool);
-            score=pool;
-            numberOfPlayers = 0;
-            blocksAmounts = 0;
+            rowsNumber = Integer.parseInt(tempRows.toString());
+            colsNumber = Integer.parseInt(tempCols.toString());
+            pool = Integer.parseInt(tempPool.toString());
+            score = pool;
+            int numberOfPlayers = 0;
 
-            double tempWidth=0.8*1/Math.max(colsNumber,rowsNumber);
+            double blockSize = 0.8*1/Math.max(colsNumber,rowsNumber);
             fields = new Field[rowsNumber][colsNumber];
             backgroundFields = new Field[rowsNumber][colsNumber];
             for (int temp_i = 0; temp_i < rowsNumber; temp_i++) {
                 for (int temp_j = 0; temp_j < colsNumber; temp_j++) {
                     if ((char) tempMapArray[temp] == '_') {
-                        fields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
-                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
+                        fields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
+                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
                     } else if ((char) tempMapArray[temp] == 'X') {
-                        fields[temp_i][temp_j] = new Wall(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
-                        backgroundFields[temp_i][temp_j] = new Wall(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
+                        fields[temp_i][temp_j] = new Wall(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
+                        backgroundFields[temp_i][temp_j] = new Wall(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
                     } else if ((char) tempMapArray[temp] == '*') {
-                        fields[temp_i][temp_j] = new BoxChest(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth,tempWidth);
-                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
-                        blocksAmounts++;
+                        fields[temp_i][temp_j] = new BoxChest(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize,blockSize);
+                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
                     } else if ((char) tempMapArray[temp] == '.') {
-                        fields[temp_i][temp_j] = new DestinationPoint(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
-                        backgroundFields[temp_i][temp_j] = new DestinationPoint(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
+                        fields[temp_i][temp_j] = new DestinationPoint(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
+                        backgroundFields[temp_i][temp_j] = new DestinationPoint(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
                     } else if ((char) tempMapArray[temp] == '@') {
-                        player = new Player(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
+                        Player player = new Player(panelHeight, panelWidth, temp_j * blockSize, temp_i * blockSize, blockSize, blockSize);
                         fields[temp_i][temp_j] = player;
-                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*tempWidth, temp_i*tempWidth, tempWidth, tempWidth);
+                        backgroundFields[temp_i][temp_j] = new Floor(panelHeight, panelWidth,temp_j*blockSize, temp_i*blockSize, blockSize, blockSize);
                         numberOfPlayers++;
                         if(numberOfPlayers == 1) playerSetUp = new Move(temp_j, temp_i, player);
                     } else { temp_j--; }
@@ -270,7 +261,6 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         } catch (Exception e) {
             System.out.println("Nie wczytano pliku");
         }
-        return fields;
     }
 
     public int getPool(){ return pool; }
@@ -303,7 +293,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
 
     @Override
     public void remove(ISideBlock listener) {
-        listeners.remove(listeners.indexOf(listener));
+        listeners.remove(listener);
     }
 
     @Override
@@ -319,7 +309,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
     @Override
     public void moveEvent(MoveEvent event)
     {
-        String cmd = event.getCommand();
+        String cmd = event.command();
         switch (cmd){
             case "Move":
                 if(!move && score>0) {

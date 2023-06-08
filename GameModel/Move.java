@@ -13,7 +13,7 @@ import MapObjects.Player;
 public class Move implements KeyListener, IMove{
     private int xPosition;
     private int yPosition;
-    private Player player;
+    private final Player player;
     private Field[][] fields;
     private Direction direction;
     public enum Direction{
@@ -23,7 +23,7 @@ public class Move implements KeyListener, IMove{
         RIGHT,
         STAY
     }
-    private ArrayList<IGameArea> listeners;
+    private final ArrayList<IGameArea> listeners;
 
     public Move(int x, int y, Player player) {
         listeners = new ArrayList<>();
@@ -42,35 +42,38 @@ public class Move implements KeyListener, IMove{
     @Override
     public void keyReleased(KeyEvent event){
         int keyCode = event.getKeyCode();
-        if(keyCode == event.VK_UP ||keyCode == event.VK_DOWN ||keyCode == event.VK_LEFT || keyCode == event.VK_RIGHT) direction = Direction.STAY;
+        if(
+            keyCode == KeyEvent.VK_UP ||keyCode == KeyEvent.VK_DOWN ||
+            keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT
+        ) direction = Direction.STAY;
     }
 
    @Override
     public void keyPressed(KeyEvent event) {
        int keyCode = event.getKeyCode();
-       if (keyCode == event.VK_UP) {
+       if (keyCode == KeyEvent.VK_UP) {
            direction = Direction.UP;
            getMove();
        }
-       if (keyCode == event.VK_DOWN) {
+       if (keyCode == KeyEvent.VK_DOWN) {
            direction = Direction.DOWN;
            getMove();
        }
-       if (keyCode == event.VK_LEFT) {
+       if (keyCode == KeyEvent.VK_LEFT) {
            direction = Direction.LEFT;
            getMove();
        }
-       if (keyCode == event.VK_RIGHT) {
+       if (keyCode == KeyEvent.VK_RIGHT) {
            direction = Direction.RIGHT;
            getMove();
        }
-       if (keyCode == event.VK_SPACE) {
+       if (keyCode == KeyEvent.VK_SPACE) {
            notify(new MoveEvent("Pause",null,false));
        }
-       if(keyCode == event.VK_X){
+       if(keyCode == KeyEvent.VK_X){
            notify(new MoveEvent("Reset",null,false));
        }
-       if(keyCode == event.VK_Z){
+       if(keyCode == KeyEvent.VK_Z){
            checkPullBox();
        }
    }
@@ -89,12 +92,10 @@ public class Move implements KeyListener, IMove{
         int surrounding = 0;
         int[] offsetArray = {0,0};
             if(fields[yPosition+1][xPosition].getType()== Field.Type.MOVING) {
-                offsetArray[0] = 0;
                 offsetArray[1] = -1;
                 surrounding++;
             }
             if(fields[yPosition-1][xPosition].getType()== Field.Type.MOVING) {
-                offsetArray[0] = 0;
                 offsetArray[1] = 1;
                 surrounding++;
             }
@@ -158,7 +159,7 @@ public class Move implements KeyListener, IMove{
             xPosition+=offsetArray[0];
             fields[yPosition][xPosition] = player;
         }
-        else if(reverse){
+        else {
             double tempX,tempY,tempWidth;
             tempX = player.getPositionX();
             tempY = player.getPositionY();
@@ -214,7 +215,7 @@ public class Move implements KeyListener, IMove{
     public void add(IGameArea listener){listeners.add(listener);}
 
     @Override
-    public void remove(IGameArea listener){ listeners.remove(listeners.indexOf(listener)); }
+    public void remove(IGameArea listener){ listeners.remove(listener); }
 
     @Override
     public void notify(MoveEvent event){

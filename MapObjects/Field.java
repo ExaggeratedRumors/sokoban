@@ -12,13 +12,13 @@ public abstract class Field implements IField{
     protected Color color;
     private double positionX;
     private double positionY;
-    private double fieldHeight;
-    private double fieldWidth;
-    private Rectangle field;
+    private final double fieldHeight;
+    private final double fieldWidth;
+    private final Rectangle field;
     private double deltaX;
     private double deltaY;
-    private double fps;
-    private Type type;
+    private final double fps;
+    private final Type type;
     protected boolean checkPoint;
     protected Field previousField;
     public enum Type{
@@ -26,16 +26,16 @@ public abstract class Field implements IField{
         MOVING,
         STILL
     }
-    private ArrayList<IGameArea> listeners;
+    private final ArrayList<IGameArea> listeners;
 
     public Field(int height, int width, double positionX, double positionY, double fieldHeight, double fieldWidth, Color fieldColor, Type type) {
         fps = 0.03125;
         panelHeight = height;
         panelWidth = width;
-        this.positionX=1.0*positionX;
-        this.positionY=1.0*positionY;
-        this.fieldHeight=1.0*fieldHeight;
-        this.fieldWidth=1.0*fieldWidth;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.fieldHeight = fieldHeight;
+        this.fieldWidth = fieldWidth;
         color=fieldColor;
         field = new Rectangle((int)Math.round(positionX*panelWidth+0.2*panelWidth),(int)Math.round(positionY*panelHeight+0.2*panelHeight),(int)Math.round(fieldWidth*panelWidth),(int)Math.round(fieldHeight*panelHeight));
         listeners = new ArrayList<>();
@@ -75,8 +75,6 @@ public abstract class Field implements IField{
 
     public double getFieldWidth(){return fieldWidth;}
 
-    public double getFieldHeight(){return fieldHeight;}
-
 
     public int isCorrectPosition(){ return 0; }
 
@@ -114,7 +112,7 @@ public abstract class Field implements IField{
     }
     @Override
     public void remove(IGameArea listener) {
-        listeners.remove(listeners.indexOf(listener));
+        listeners.remove(listener);
     }
     @Override
     public void notify(FieldEvent event) {

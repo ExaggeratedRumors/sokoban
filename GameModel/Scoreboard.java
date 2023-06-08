@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,19 +19,7 @@ import org.w3c.dom.Node;
 
 public class Scoreboard extends JPanel {
 
-    private class Score{
-        private String nickName;
-        private int score;
-        public Score(String nickName, int score){
-            this.nickName=nickName;
-            this.score=score;
-        }
-        public String getNickName() {
-            return nickName;
-        }
-        public int getScore() {
-            return score;
-        }
+    private record Score(String nickName, int score) {
     }
     ArrayList<Score> scoreLadder;
     public int numberOfScores;
@@ -83,10 +70,10 @@ public class Scoreboard extends JPanel {
                 source.appendChild(index);
                 index.setAttribute("id", Integer.toString(i));
                 Element nickName = doc.createElement("nickName");
-                nickName.appendChild(doc.createTextNode(scoreLadder.get(i).getNickName()));
+                nickName.appendChild(doc.createTextNode(scoreLadder.get(i).nickName()));
                 index.appendChild(nickName);
                 Element score = doc.createElement("score");
-                score.appendChild(doc.createTextNode(Integer.toString(scoreLadder.get(i).getScore())));
+                score.appendChild(doc.createTextNode(Integer.toString(scoreLadder.get(i).score())));
                 index.appendChild(score);
             }
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -95,7 +82,7 @@ public class Scoreboard extends JPanel {
             StreamResult result = new StreamResult(new File("Config\\scoreboard.xml"));
             transformer.transform(docSource, result);
         }
-        catch (Exception e){}
+        catch (Exception ignored){}
     }
 
     private JTable createTable() {
@@ -106,8 +93,8 @@ public class Scoreboard extends JPanel {
             Vector<String> row = new Vector<>();
             String rowNumber = "nr."+Integer.toString(i + 1);
             row.add(rowNumber);
-            row.add(scoreLadder.get(i).getNickName());
-            row.add(Integer.toString(scoreLadder.get(i).getScore()));
+            row.add(scoreLadder.get(i).nickName());
+            row.add(Integer.toString(scoreLadder.get(i).score()));
             rows.add(row);
         }
         Vector<String> cols = new Vector<>();
@@ -140,11 +127,7 @@ public class Scoreboard extends JPanel {
     }
 
     public void sortLadder() {
-        Collections.sort(scoreLadder, (pair, t1) -> {
-            if(pair.getScore()<t1.getScore()) return 1;
-            if(pair.getScore()>t1.getScore()) return -1;
-            else return 0;
-        });
+        scoreLadder.sort((pair, t1) -> Integer.compare(t1.score(), pair.score()));
     }
 
     public void newScore(String nickname, int score){
@@ -154,7 +137,7 @@ public class Scoreboard extends JPanel {
     }
 
     public int getLowestScore(){
-        return scoreLadder.get(numberOfScores-1).getScore();
+        return scoreLadder.get(numberOfScores-1).score();
     }
 }
 

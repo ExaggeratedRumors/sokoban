@@ -13,8 +13,8 @@ import static Config.Param.*;
 
 
 public class SideBlock extends JPanel implements ActionListener, ISideBlock, Runnable{
-    private int panelWidth;
-    private int panelHeight;
+    private final int panelWidth;
+    private final int panelHeight;
     private Dimension sideBlockDimensions;
     private int currentScore;
     private int totalScore;
@@ -22,8 +22,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
     private int resetNumber;
     private int pullNumber;
     private boolean paused;
-    private ActionListener listener;
-    private ArrayList<IGameFrame> listeners;
+    private final ArrayList<IGameFrame> listeners;
     JLabel sideBlockDescriptions;
     JLabel totalScoreDescription;
     JLabel resetBlock;
@@ -31,11 +30,10 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
     JLabel pauseLabel;
     JLabel freeSpace;
 
-    public SideBlock(int panelWidth, int panelHeight, ActionListener listener, int score){
+    public SideBlock(int panelWidth, int panelHeight, int score){
         paused=false;
         this.panelHeight = panelHeight;
         this.panelWidth = panelWidth;
-        this.listener = listener;
         listeners = new ArrayList<>();
         currentScore = score;
         previousScore=0;
@@ -135,20 +133,18 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         repaint();
     }
 
-    public int getCurrentScore(){ return currentScore; }
-
     public void run(){
-        try {
-            while (true) {
-                sideBlockDescriptions.setText("Pula punków planszy: " + currentScore);
-                totalScoreDescription.setText("Wynik totalny: " + totalScore);
-                resetBlock.setText("Liczba resetów (przycisk X): " + resetNumber);
-                pullBlock.setText("Liczba pociągnięć bloku (przycisk Z): " + pullNumber);
-                pauseLabel.setVisible(paused);
-                defaultDimensions(panelWidth, panelHeight);
-                Thread.sleep(14);
-            }
-        } catch (Exception e){}
+        while (true) {
+            try {
+            sideBlockDescriptions.setText("Pula punków planszy: " + currentScore);
+            totalScoreDescription.setText("Wynik totalny: " + totalScore);
+            resetBlock.setText("Liczba resetów (przycisk X): " + resetNumber);
+            pullBlock.setText("Liczba pociągnięć bloku (przycisk Z): " + pullNumber);
+            pauseLabel.setVisible(paused);
+            defaultDimensions(panelWidth, panelHeight);
+            Thread.sleep(14);
+            } catch (Exception ignored){}
+        }
     }
 
     @Override
@@ -158,7 +154,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
 
     @Override
     public void remove(IGameFrame listener) {
-        listeners.remove(listeners.indexOf(listener));
+        listeners.remove(listener);
     }
 
     @Override
@@ -174,42 +170,37 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
 
     @Override
     public void gameAreaEvent(GameAreaEvent event){
-        String cmd = event.getCommand();
-        switch (cmd){
-            case "Move":
-                currentScore=event.getPool();
-                totalScore=previousScore+currentScore;
-                break;
-            case "Pull":
-                pullNumber=event.getValue();
-                currentScore=event.getPool();
-                totalScore=previousScore+currentScore;
-                break;
-            case "Reset":
-                resetNumber=event.getValue();
-                currentScore= event.getPool();
-                totalScore=previousScore+currentScore;
-                break;
-            case "EndMap":
-                previousScore+=event.getPool();
-                totalScore=previousScore;
-                break;
-            case "LastMap":
-                notify(new SideBlockEvent(pullNumber,resetNumber,totalScore, event.getValue(), true, "LastMap"));
-                break;
-            case "NewMap":
-                currentScore+=event.getPool();
-                totalScore=previousScore+currentScore;
-                break;
-            case "OutOfPoints":
-                notify(new SideBlockEvent(pullNumber,resetNumber,totalScore,event.getValue(),false,"OutOfPoints"));
-                break;
-            case "Pause":
-                if(paused) paused=false;
-                else paused=true;
-                break;
-            default:
-                break;
+        String cmd = event.command();
+        switch (cmd) {
+            case "Move" -> {
+                currentScore = event.pool();
+                totalScore = previousScore + currentScore;
+            }
+            case "Pull" -> {
+                pullNumber = event.value();
+                currentScore = event.pool();
+                totalScore = previousScore + currentScore;
+            }
+            case "Reset" -> {
+                resetNumber = event.value();
+                currentScore = event.pool();
+                totalScore = previousScore + currentScore;
+            }
+            case "EndMap" -> {
+                previousScore += event.pool();
+                totalScore = previousScore;
+            }
+            case "LastMap" ->
+                    notify(new SideBlockEvent(pullNumber, resetNumber, totalScore, event.value(), true, "LastMap"));
+            case "NewMap" -> {
+                currentScore += event.pool();
+                totalScore = previousScore + currentScore;
+            }
+            case "OutOfPoints" ->
+                    notify(new SideBlockEvent(pullNumber, resetNumber, totalScore, event.value(), false, "OutOfPoints"));
+            case "Pause" -> paused = !paused;
+            default -> {
+            }
         }
 
     }
