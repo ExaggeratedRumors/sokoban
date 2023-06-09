@@ -31,7 +31,7 @@
     <sideBlockWidth>240</sideBlockWidth>
     <gameScreenPanelHeightRatio>0.75</gameScreenPanelHeightRatio>
     <gameScreenPanelWidthRatio>1</gameScreenPanelWidthRatio>
-    <lvlPath>Config\\</lvlPath>
+    <lvlPath>utils\\</lvlPath>
     <mapName>map</mapName>
     <numberOfMaps>3</numberOfMaps>
 </config>

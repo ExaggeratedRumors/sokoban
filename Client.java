@@ -1,4 +1,4 @@
-import GameModel.ApplicationMenu;
+import gui.ApplicationMenu;
 
 public class Client {
     public static void main(String[] args) {
