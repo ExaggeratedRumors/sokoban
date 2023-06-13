@@ -1,5 +1,5 @@
 package event;
 
-public record MoveEvent(String command, int[] direction, boolean collision) {
+public record MoveEvent(String command, char code, int[] direction, boolean collision) {
 
 }

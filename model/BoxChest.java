@@ -1,10 +1,10 @@
 package model;
 
 import java.awt.*;
-import interfaces.IField;
+
 import static utils.Param.*;
 
-public class BoxChest extends Field implements IField{
+public class BoxChest extends Field {
 
     private final Color chestColor = new Color(boxColor);
     private final Color checkpointColor = new Color(26316);

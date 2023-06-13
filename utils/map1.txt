@@ -1,7 +1,7 @@
 10,14,120
 XXXXXXXXXXXXXX
 X..__X_____XXX
-X..__X_______X
+X..__X___@___X
 X____X*XXXX__X
 X________XX__X
 X____X*_*___XX

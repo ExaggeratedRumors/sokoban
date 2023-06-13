@@ -2,11 +2,9 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
-import event.FieldEvent;
-import interfaces.IField;
 import interfaces.IGameArea;
 
-public abstract class Field implements IField{
+public abstract class Field {
     private int panelHeight;
     private int panelWidth;
     protected Color color;
@@ -105,20 +103,4 @@ public abstract class Field implements IField{
         field.setLocation((int)Math.round(positionX*width+0.2*width), (int)Math.round(positionY*height+0.2*height));
         field.setSize((int)Math.round(fieldWidth*width), (int)Math.round(fieldHeight*height));
     }
-    @Override
-    public void add(IGameArea listener) {
-        listeners.add(listener);
-            notify(new FieldEvent("Good Position"));
-    }
-    @Override
-    public void remove(IGameArea listener) {
-        listeners.remove(listener);
-    }
-    @Override
-    public void notify(FieldEvent event) {
-        for (IGameArea observer : listeners) {
-            observer.fieldEvent(event);
-        }
-    }
-
 }

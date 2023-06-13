@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Connection {
     private final int playerID;
-    private final ObjectInputStream ois;
-    private final ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
     private final ArrayList<DTO> mapData;
     public enum AppType { CLIENT, SERVER }
 
@@ -34,14 +34,15 @@ public class Connection {
         Thread listener = new Thread(() -> {
             while(isConnected.get()) {
                 try {
-                    DTO message = (DTO)ois.readObject();
-                    mapData.add(message);
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
                     Date date = new Date(System.currentTimeMillis());
-                    System.out.println(playerID + "("+ formatter.format(date) + "): ");
+                    System.out.println("RECEIVED:" + playerID + "("+ formatter.format(date) + ")");
+                    DTO message = (DTO)ois.readObject();
+                    mapData.add(message);
                 }
                 catch(Exception e) {
                     isConnected.set(false);
+                    e.printStackTrace();
                     System.out.println(playerID + ": Connection lost!");
                 }
             }
@@ -54,22 +55,8 @@ public class Connection {
     public void post(DTO message) {
         Thread post = new Thread(() -> {
             try {
-                Thread.sleep(1);
                 oos.writeObject(message);
-            } catch (InterruptedException | IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        post.setDaemon(true);
-        post.start();
-    }
-
-    public void post(char cmd) {
-        Thread post = new Thread(() -> {
-            try {
-                Thread.sleep(1);
-                oos.writeObject(cmd);
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });

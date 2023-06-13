@@ -48,10 +48,10 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
     }
 
     private void sideBlockLayout(){
-
         GridBagConstraints constraint = new GridBagConstraints();
 
-        sideBlockDescriptions= new JLabel("Pula punków planszy: " + currentScore);
+        sideBlockDescriptions= new JLabel("Pula punktów planszy: " + currentScore);
+        sideBlockDescriptions.setFont(new Font("Arial", Font.PLAIN, 18));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
         constraint.weighty = 0.1;
@@ -63,7 +63,8 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         sideBlockDescriptions.setForeground(Color.RED);
         add(sideBlockDescriptions, constraint);
 
-        totalScoreDescription= new JLabel("Wynik totalny: " + totalScore);
+        totalScoreDescription= new JLabel("Wynik: " + totalScore);
+        totalScoreDescription.setFont(new Font("Arial", Font.PLAIN, 18));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
         constraint.weighty = 0.1;
@@ -76,6 +77,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         add(totalScoreDescription, constraint);
 
         resetBlock= new JLabel("Liczba resetów: " + resetNumber);
+        resetBlock.setFont(new Font("Arial", Font.PLAIN, 18));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
         constraint.weighty = 0.1;
@@ -88,6 +90,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         add(resetBlock, constraint);
 
         pullBlock= new JLabel("Liczba pociągnięć bloku: " + pullNumber);
+        pullBlock.setFont(new Font("Arial", Font.PLAIN, 18));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
         constraint.weighty = 0.6;
@@ -99,8 +102,8 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         pullBlock.setForeground(Color.GREEN);
         add(pullBlock, constraint);
 
-        freeSpace= new JLabel(" ");
-        freeSpace.setFont(new Font("Stencil", Font.BOLD, 42));
+        freeSpace= new JLabel("Poruszaj się przy użyciu AWDS");
+        freeSpace.setFont(new Font("Arial", Font.PLAIN, 18));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
         constraint.weighty = 0.6;
@@ -112,7 +115,7 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
         freeSpace.setForeground(Color.GRAY);
         add(freeSpace, constraint);
 
-        pauseLabel= new JLabel("PAUZA");
+        pauseLabel= new JLabel("Spauzuj (P)");
         pauseLabel.setFont(new Font("Stencil", Font.BOLD, 42));
         constraint.fill = GridBagConstraints.HORIZONTAL;
         constraint.ipady = 0;
@@ -136,10 +139,12 @@ public class SideBlock extends JPanel implements ActionListener, ISideBlock, Run
     public void run(){
         while (true) {
             try {
-            sideBlockDescriptions.setText("Pula punków planszy: " + currentScore);
-            totalScoreDescription.setText("Wynik totalny: " + totalScore);
-            resetBlock.setText("Liczba resetów (przycisk X): " + resetNumber);
-            pullBlock.setText("Liczba pociągnięć bloku (przycisk Z): " + pullNumber);
+            sideBlockDescriptions.setText("Ruch (AWDS): " + currentScore);
+            totalScoreDescription.setText("Wynik: " + totalScore);
+            resetBlock.setText("Resety (X): " + resetNumber);
+            pullBlock.setText("Pociągnięcia bloków (Z): " + pullNumber);
+            freeSpace.setText("Spauzuj (P)");
+            freeSpace.setVisible(!paused);
             pauseLabel.setVisible(paused);
             defaultDimensions(panelWidth, panelHeight);
             Thread.sleep(14);

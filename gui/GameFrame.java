@@ -139,8 +139,7 @@ public class GameFrame extends JFrame implements IGameFrame, ComponentListener, 
     }
 
     @Override
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
         Image gObject = createImage(getWidth(), getHeight());
         Graphics graphics = gObject.getGraphics();
         super.paint(graphics);

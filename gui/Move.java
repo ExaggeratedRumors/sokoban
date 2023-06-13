@@ -51,27 +51,27 @@ public class Move implements KeyListener, IMove{
    @Override
     public void keyPressed(KeyEvent event) {
        int keyCode = event.getKeyCode();
-       if (keyCode == KeyEvent.VK_UP) {
+       if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
            direction = Direction.UP;
-           getMove();
+           getMove('w');
        }
-       if (keyCode == KeyEvent.VK_DOWN) {
+       if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
            direction = Direction.DOWN;
-           getMove();
+           getMove('s');
        }
-       if (keyCode == KeyEvent.VK_LEFT) {
+       if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
            direction = Direction.LEFT;
-           getMove();
+           getMove('a');
        }
-       if (keyCode == KeyEvent.VK_RIGHT) {
+       if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
            direction = Direction.RIGHT;
-           getMove();
+           getMove('d');
        }
        if (keyCode == KeyEvent.VK_SPACE) {
-           notify(new MoveEvent("Pause",null,false));
+           notify(new MoveEvent("Pause",'p', null,false));
        }
        if(keyCode == KeyEvent.VK_X){
-           notify(new MoveEvent("Reset",null,false));
+           notify(new MoveEvent("Reset",'x', null,false));
        }
        if(keyCode == KeyEvent.VK_Z){
            checkPullBox();
@@ -111,20 +111,21 @@ public class Move implements KeyListener, IMove{
             }
         if(xPosition + offsetArray[0] >= 0 && yPosition + offsetArray[1] >= 0){
             if (fields[yPosition+offsetArray[1]][xPosition+offsetArray[0]].getType()==Field.Type.STILL && surrounding==1){
-                notify(new MoveEvent("Pull",offsetArray,false));
+                notify(new MoveEvent("Pull",'z', offsetArray,false));
             }
         }
     }
 
-    public void getMove() {
+    public void getMove(char code) {
         int[] offsetArray = setOffset();
+        if(fields == null) return;
         if(xPosition + offsetArray[0] >= 0 && yPosition + offsetArray[1] >= 0){
             if (fields[yPosition+offsetArray[1]][xPosition+offsetArray[0]].getType() == Field.Type.STILL){
-                notify(new MoveEvent("Move",offsetArray,false));
+                notify(new MoveEvent("Move",code, offsetArray,false));
             }
             else if(fields[yPosition+offsetArray[1]][xPosition+offsetArray[0]].getType() == Field.Type.MOVING) {
                 if(fields[yPosition+2*offsetArray[1]][xPosition+2*offsetArray[0]].getType() == Field.Type.STILL){
-                    notify(new MoveEvent("Move",offsetArray,true));
+                    notify(new MoveEvent("Move", code, offsetArray,true));
                 }
             }
         }

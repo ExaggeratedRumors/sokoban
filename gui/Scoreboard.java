@@ -37,7 +37,7 @@ public class Scoreboard extends JPanel {
     }
     private void loadScoreboard() {
         try {
-            File xmlInputFile = new File("Config\\scoreboard.xml");
+            File xmlInputFile = new File("utils\\scoreboard.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(xmlInputFile);
@@ -91,7 +91,7 @@ public class Scoreboard extends JPanel {
         Vector<Vector> rows = new Vector<>();
         for (int i = 0; i < numberOfScores; i++) {
             Vector<String> row = new Vector<>();
-            String rowNumber = "nr."+Integer.toString(i + 1);
+            String rowNumber = "nr." + (i + 1);
             row.add(rowNumber);
             row.add(scoreLadder.get(i).nickName());
             row.add(Integer.toString(scoreLadder.get(i).score()));

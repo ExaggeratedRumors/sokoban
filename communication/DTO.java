@@ -12,7 +12,9 @@ public class DTO implements Serializable {
     }
 
     public DTO(char cmd) {
-        this.map = null;
+        this.map = new byte[2];
+        map[0] = 1;
+        map[1] = 25;
         this.command = cmd;
     }
 

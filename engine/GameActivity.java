@@ -64,10 +64,12 @@ public class GameActivity {
                     } else if ((char) tempMapArray[temp] == 'X') {
                         map[i][j] = new MapObject(true, false);
                     } else if ((char) tempMapArray[temp] == '*') {
+                        map[i][j] = new MapObject(false, false);
                         boxes.add(new Box(i, j));
                     } else if ((char) tempMapArray[temp] == '.') {
                         map[i][j] = new MapObject(false, true);
                     } else if ((char) tempMapArray[temp] == '@') {
+                        map[i][j] = new MapObject(false, false);
                         players.add(new Player(i, j));
                     } else { j--; }
                     temp++;
@@ -78,10 +80,10 @@ public class GameActivity {
         }
     }
 
-    public byte[] createDTO() {
+    public byte[] mapToDTO() {
         StringBuilder sb = new StringBuilder();
-        sb.append(width).append(",").append(height).append(",").append(score).append("\n");
-        byte[][] symbolMap = new byte[height][width];
+        sb.append(height).append(",").append(width).append(",").append(score).append("\n");
+        char[][] symbolMap = new char[height][width];
         for(int i = 0 ; i < height ; i++) {
             for(int j = 0 ; j < width ; j++) {
                 if(map[i][j].isCollision()) symbolMap[i][j] = 'X';
@@ -94,7 +96,7 @@ public class GameActivity {
         boxes.forEach((it) -> symbolMap[it.getY()][it.getX()] = '*');
 
         for(int i = 0 ; i < height ; i++) {
-            for(int j = 0 ; i < width ; j ++) {
+            for(int j = 0 ; j < width ; j++) {
                 sb.append(symbolMap[i][j]);
             }
             sb.append("\n");
@@ -104,6 +106,7 @@ public class GameActivity {
 
     private boolean isMoveLegal(int id, int dx, int dy) {
         Box tempBox = null;
+        if(id >= players.size()) return false;
         Player player = players.get(id);
         if(player.getX() + dx < 0 || player.getY() + dy < 0 ||
             player.getX() + dx >= width || player.getY() + dy >= height)
