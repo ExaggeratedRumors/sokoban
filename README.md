@@ -22,7 +22,13 @@
 ```
 git clone https://github.com/ExaggeratedRumors/sokoban.git
 ```
-3. Open application root directory and put command to run artifact:
+3. Open application root directory.
+4. Put command to run server-artifact (skip if your want to run offline version):
 ```
-java -jar sokoban.jar
+java -jar server.jar
 ```
+5. Put command to run client-artifact:
+```
+java -jar client.jar
+```
+
