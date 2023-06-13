@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerService {
     private final int HANDLER_DELAY = 150;
-    int port = 21000;
+    int port = 21001;
     private final ArrayList<Connection> clients = new ArrayList<>();
     private ServerSocket serverSocket;
     private GameActivity activity;
@@ -34,6 +34,7 @@ public class ServerService {
                 try {
                     Socket socket = serverSocket.accept();
                     clients.add(new Connection(clients.size(), socket, Connection.AppType.SERVER));
+                    activity.addClient();
                 }
                 catch(IOException e) {
                     e.printStackTrace();
@@ -64,7 +65,11 @@ public class ServerService {
                         DTO dto = it.getUnreadMessage();
                         activity.serviceEvent(it.getID(), dto.getCommand());
                     }
-                    it.post(new DTO(activity.mapToDTO()));
+                    if(activity.isGameOver())
+                        it.post(new DTO('l'));
+                    else if(activity.isGameWon())
+                        it.post(new DTO('p'));
+                    else it.post(new DTO(activity.mapToDTO()));
                 });
             }
         });

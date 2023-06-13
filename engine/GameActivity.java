@@ -15,10 +15,12 @@ public class GameActivity {
     private final AtomicBoolean isPause;
     private ArrayList<Player> players;
     private ArrayList<Box> boxes;
+    private int clientsAmount;
 
     public GameActivity() {
         this.isPause = new AtomicBoolean(false);
         level = 1;
+        clientsAmount = 0;
         loadMap();
     }
 
@@ -27,7 +29,7 @@ public class GameActivity {
         boxes = new ArrayList<>();
         pulls = 5;
         try {
-            Path mapLevelPath = Paths.get(mapPath, "map" + level + ".txt");
+            Path mapLevelPath = Paths.get(mapPath, "server_map" + level + ".txt");
             byte[] tempMapArray = Files.readAllBytes(mapLevelPath);
 
             StringBuilder tempRows = new StringBuilder();
@@ -92,7 +94,8 @@ public class GameActivity {
             }
         }
 
-        players.forEach((it) -> symbolMap[it.getY()][it.getX()] = '@');
+        for(int i = 0; i < clientsAmount; i ++)
+            symbolMap[players.get(i).getY()][players.get(i).getX()] = '@';
         boxes.forEach((it) -> symbolMap[it.getY()][it.getX()] = '*');
 
         for(int i = 0 ; i < height ; i++) {
@@ -120,16 +123,18 @@ public class GameActivity {
             }
         }
         if(tempBox != null) {
-            if(map[tempBox.getY() + 2 * dy][tempBox.getX() + 2 * dx].isCollision())
+            if(map[tempBox.getY() + dy][tempBox.getX() + dx].isCollision())
                 return false;
             for(Box b: boxes) {
-                if (b.matchPosition(tempBox.getX() + 2 * dx, tempBox.getY() + 2 * dy)) {
+                if (b.matchPosition(tempBox.getX() + dx, tempBox.getY() + dy)) {
                     return false;
                 }
             }
         }
         return true;
     }
+
+    public void addClient() { this.clientsAmount += 1; }
 
     private void movePlayer(int id, int dx, int dy) {
         Player player = players.get(id);
@@ -156,6 +161,8 @@ public class GameActivity {
 
         int diffY = tempBox.getY() - player.getY();
         int diffX = tempBox.getX() - player.getX();
+        if(diffX != 0 && diffY != 0) return false;
+
         if(map[player.getY() - diffY][player.getX() - diffX].isCollision())
             return false;
         for(Box b: boxes) {
@@ -176,8 +183,8 @@ public class GameActivity {
             }
         }
         if(tempBox == null) return;
-        int diffY = tempBox.getY() - player.getY();
-        int diffX = tempBox.getX() - player.getX();
+        int diffY = player.getY() - tempBox.getY();
+        int diffX = player.getX() - tempBox.getX();
         player.move(diffX, diffY);
         tempBox.move(diffX, diffY);
     }
@@ -190,8 +197,10 @@ public class GameActivity {
         for(Box b: boxes) {
             if(!b.isChecked()) return false;
         }
+        if(level == 3) return true;
         level = Math.min(3, level + 1);
-        return true;
+        loadMap();
+        return false;
     }
 
     public void serviceEvent(int id, char cmd) {

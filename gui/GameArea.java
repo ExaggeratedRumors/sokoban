@@ -106,6 +106,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
                 if (!resetProcess) {
                     if (online) {
                         loadMap();
+                        if(clientServices.isGameOver()) gameOver();
                         continue;
                     }
                     if(fields == null || playerSetUp == null) continue;
@@ -264,6 +265,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         panelHeight = height;
         panelWidth = (int)Math.round(width*0.6);
         if(playerSetUp != null) playerSetUp.refreshPosition(panelWidth,panelHeight);
+        if(backgroundFields == null) return;
         for(Field[] fieldArray : backgroundFields)
         {
             for(Field field: fieldArray){
@@ -318,12 +320,16 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         }
     }
 
+    public void gameOver() {
+        gameOver = true;
+        notify(new GameAreaEvent("OutOfPoints",score,currentMap));
+    }
     public void clientEvent(MoveEvent event) {
         clientServices.post(event.code());
         switch (event.code()) {
             case 'w', 's', 'a', 'd' -> notify(new GameAreaEvent("Move", score, 0));
-            case 'z' -> notify(new GameAreaEvent("Pull", score, boxPull));
-            case 'x' -> notify(new GameAreaEvent("Reset", score, reset));
+            case 'z' -> notify(new GameAreaEvent("Pull", score, Math.max(0,--boxPull)));
+            case 'x' -> notify(new GameAreaEvent("Reset", score, Math.max(0,--reset)));
             case 'p' -> notify(new GameAreaEvent("Pause", 0, 0));
             default -> {
             }

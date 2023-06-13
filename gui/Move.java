@@ -202,6 +202,7 @@ public class Move implements KeyListener, IMove{
     }
 
     public void refreshPosition(int panelWidth,int panelHeight){
+        if(fields == null) return;
         for(Field[] fieldArray : fields)
         {
             for(Field field: fieldArray){

@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientService {
-    private int serverPort = 21000;
+    private int serverPort = 21001;
     private final AtomicBoolean isRunning = new AtomicBoolean();
     private final AtomicBoolean dataExists = new AtomicBoolean();
     private Connection serverConnection;
@@ -45,5 +45,8 @@ public class ClientService {
         this.serverConnection.post(new DTO(cmd));
     }
     public byte[] getMap() { return this.dto.map; }
+    public boolean isGameOver() { return dto != null && dto.command == 'l'; }
+    public boolean isGameWon() { return dto != null && dto.command == 'p'; }
+
     public boolean isDataExists() { return this.dataExists.get(); }
 }
