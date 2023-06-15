@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
+    <socket>4350</socket>
+
     <borderHorizontal>10</borderHorizontal>
     <borderVertical>10</borderVertical>
     <rigidWidth>20</rigidWidth>

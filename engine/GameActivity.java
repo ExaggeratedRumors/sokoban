@@ -134,7 +134,11 @@ public class GameActivity {
         return true;
     }
 
-    public void addClient() { this.clientsAmount += 1; }
+    public boolean addClient() {
+        if(players.size() == clientsAmount) return false;
+        clientsAmount += 1;
+        return true;
+    }
 
     private void movePlayer(int id, int dx, int dy) {
         Player player = players.get(id);

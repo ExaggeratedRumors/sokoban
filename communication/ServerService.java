@@ -1,6 +1,7 @@
 package communication;
 
 import engine.GameActivity;
+import utils.Param;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerService {
     private final int HANDLER_DELAY = 150;
-    int port = 21001;
+    int port = Param.socket;
     private final ArrayList<Connection> clients = new ArrayList<>();
     private ServerSocket serverSocket;
     private GameActivity activity;
@@ -33,8 +34,12 @@ public class ServerService {
             while(isWorking.get()){
                 try {
                     Socket socket = serverSocket.accept();
-                    clients.add(new Connection(clients.size(), socket, Connection.AppType.SERVER));
-                    activity.addClient();
+                    Connection connection = new Connection(clients.size(), socket, Connection.AppType.SERVER);
+                    if(!activity.addClient()) {
+                        connection.post(new DTO('.'));
+                        continue;
+                    }
+                    clients.add(connection);
                 }
                 catch(IOException e) {
                     e.printStackTrace();

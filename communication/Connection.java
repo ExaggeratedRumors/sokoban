@@ -39,8 +39,7 @@ public class Connection {
                     System.out.println("RECEIVED:" + playerID + "("+ formatter.format(date) + ")");
                     DTO message = (DTO)ois.readObject();
                     mapData.add(message);
-                }
-                catch(Exception e) {
+                } catch(Exception e) {
                     isConnected.set(false);
                     e.printStackTrace();
                     System.out.println(playerID + ": Connection lost!");
@@ -53,11 +52,13 @@ public class Connection {
     }
 
     public void post(DTO message) {
+        if(!isConnected.get()) return;
         Thread post = new Thread(() -> {
             try {
                 oos.writeObject(message);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                isConnected.set(false);
             }
         });
         post.setDaemon(true);

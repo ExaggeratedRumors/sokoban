@@ -21,17 +21,16 @@ import static utils.Param.*;
 
 public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable{
 
-    private int panelHeight;
-    private int panelWidth;
-    private int colsNumber;
-    private int rowsNumber;
+    private int width, height;
+    private int panelHeight, panelWidth;
+    private int colsNumber, rowsNumber;
     private Field[][] fields;
     private Field[][] backgroundFields;
     private final Color[] colors = {new Color(2293760), new Color(2303302), new Color(2303252)};
     private String mapTagName;
     private Move playerSetUp;
     private int currentMap;
-    private final ArrayList<ISideBlock> listeners;
+    private ArrayList<ISideBlock> listeners;
     private int pool;
     private int score;
     private int boxPull;
@@ -43,12 +42,29 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
     private boolean move;
     private boolean gameOver;
     private MoveEvent moveEvent;
-    private final int fps;
+    private int fps;
     ClientService clientServices;
 
     boolean online;
 
     public GameArea(int width, int height) {
+        this.width = width;
+        this.height = height;
+        setFrame(width,height);
+        this.getSize().getHeight();
+        clientServices = new ClientService();
+        addKeyListener(this);
+        try {
+            online = clientServices.runClient();
+            //online = false;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(online) System.out.println("Online");
+        runGame();
+    }
+
+    public void runGame() {
         boxPull=numberOfBoxPull;
         reset=numberOfResets;
         paused=false;
@@ -59,20 +75,7 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
         move=false;
         animation = false;
         listeners = new ArrayList<>();
-        setFrame(width,height);
-        this.getSize().getHeight();
-        addKeyListener(this);
-
-        clientServices = new ClientService();
-
-        try {
-            online = clientServices.runClient();
-            //online = false;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         loadMap();
-        if(online) System.out.println("Online");
     }
 
     public void setFrame(int width, int height){
@@ -98,9 +101,12 @@ public class GameArea extends JPanel implements IGameArea, KeyListener, Runnable
 
     @Override
     public void run() {
-        loadMap();
         try {
             while (!gameOver) {
+                if(clientServices.isDisconnected()) {
+                    online = false;
+                    runGame();
+                }
                 setFocusable(true);
                 setEnabled(true);
                 if (!resetProcess) {

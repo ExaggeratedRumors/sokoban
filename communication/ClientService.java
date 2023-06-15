@@ -1,12 +1,14 @@
 package communication;
 
+import utils.Param;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientService {
-    private int serverPort = 21001;
+    private int serverPort = Param.socket;
     private final AtomicBoolean isRunning = new AtomicBoolean();
     private final AtomicBoolean dataExists = new AtomicBoolean();
     private Connection serverConnection;
@@ -29,9 +31,11 @@ public class ClientService {
         serverConnection.post(new DTO('c'));
 
         Thread receiver = new Thread(() -> {
-            while(isRunning.get()){
+            while(isRunning.get() && serverConnection.isConnected()){
+                if(!serverConnection.isConnected()) isRunning.set(false);
                 if(!serverConnection.isUnreadMessage()) continue;
                 dto = serverConnection.getUnreadMessage();
+                if(dto.command == '.') isRunning.set(false);
                 dataExists.set(true);
             }
         });
@@ -42,11 +46,13 @@ public class ClientService {
     }
 
     public void post(char cmd) {
+        if(!isRunning.get()) return;
         this.serverConnection.post(new DTO(cmd));
     }
     public byte[] getMap() { return this.dto.map; }
     public boolean isGameOver() { return dto != null && dto.command == 'l'; }
     public boolean isGameWon() { return dto != null && dto.command == 'p'; }
+    public boolean isDisconnected() { return dto != null && dto.command == '.'; }
 
     public boolean isDataExists() { return this.dataExists.get(); }
 }

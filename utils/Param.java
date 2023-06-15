@@ -40,6 +40,8 @@ public final class Param {
     public static String mapName="map";
     public static int numberOfMaps;
 
+    public static int socket;
+
     public static final String configParams="params.xml";
     static{ parseParam(); }
 
@@ -51,6 +53,8 @@ public final class Param {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(config);
             doc.getDocumentElement().normalize();
+
+            socket=Integer.parseInt(doc.getElementsByTagName("socket").item(0).getTextContent());
 
             ///////////////////////////
             // MENU
@@ -89,6 +93,7 @@ public final class Param {
             fieldWidth=Integer.parseInt(doc.getElementsByTagName("fieldWidth").item(0).getTextContent());
             mapPath=doc.getElementsByTagName("lvlPath").item(0).getTextContent();
             mapName=doc.getElementsByTagName("mapName").item(0).getTextContent();
+
             numberOfMaps=Integer.parseInt(doc.getElementsByTagName("numberOfMaps").item(0).getTextContent());
 
         } catch(Exception e){
